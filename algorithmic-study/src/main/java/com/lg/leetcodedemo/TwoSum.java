@@ -1,9 +1,6 @@
 package com.lg.leetcodedemo;
-
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-
 /**
  * @PackageName: com.lg.leetcodedemo
  * @ClassName: TwoSum
@@ -13,7 +10,10 @@ import java.util.Map;
  */
 public class TwoSum {
     public static void main(String[] args) {
-
+        int[] ints = twoSum(new int[]{1, 2, 3, 4, 5}, 8);
+        System.out.println(ints[0]+"  "+ints[1]);
+        int[] ints1 = twoSum1(new int[]{1, 2, 4, 5}, 7);
+        System.out.println(ints1[0]+" "+ints1[1]);
     }
 
     /**正常思路，遍历数组，判断当前数和下一个数之和是否等于target
@@ -21,7 +21,7 @@ public class TwoSum {
      * @param target
      * @return
      */
-    public int[] twoSum(int[] nums, int target) {
+    public  static int[] twoSum(int[] nums, int target) {
         int[] result = new int[2];
         out:
         for(int i=0;i<nums.length;i++){
@@ -41,7 +41,7 @@ public class TwoSum {
      * @param target
      * @return
      */
-    public int[] twoSum1(int[] nums, int target) {
+    public  static int[] twoSum1(int[] nums, int target) {
        Map<Integer,Integer> map=new HashMap<>();
         for(int i=0;i<nums.length;i++){
             int complement=target-nums[i];
