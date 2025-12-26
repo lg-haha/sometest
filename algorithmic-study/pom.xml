@@ -6,11 +6,11 @@
         <artifactId>some-test-and-study</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
-    <artifactId>arithmetic-study</artifactId>
+    <artifactId>algorithmic-study</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>arithmetic-study</name>
+    <name>algorithmic-study</name>
     <url>http://maven.apache.org</url>
 
     <properties>
