@@ -1,4 +1,4 @@
-package com.lg.leetcodedemo;
+package com.lg.leetcodedemo.tosum;
 import java.util.HashMap;
 import java.util.Map;
 /**
