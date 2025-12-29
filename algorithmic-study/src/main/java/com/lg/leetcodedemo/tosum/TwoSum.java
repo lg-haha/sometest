@@ -53,4 +53,28 @@ public class TwoSum {
         return new int[2];
     }
 
+    /**
+     * 利用双指针，最多只循环一半
+     * @param nums
+     * @param target
+     * @return
+     */
+    public  static int[] twoSum2(int[] nums, int target) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int l = 0, r = nums.length - 1;
+        while (l <= r) {
+            if (map.containsKey(target - nums[l])) {
+                return new int[] { l, map.get(target - nums[l]) };
+            }
+            map.put(nums[l], l);
+            l++;
+            if (map.containsKey(target - nums[r])) {
+                return new int[] { map.get(target - nums[r]), r };
+            }
+            map.put(nums[r], r);
+            r--;
+        }
+        return new int[] { -1, -1 };
+    }
+
 }
