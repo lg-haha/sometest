@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/.feisuan/rules/project_rule.md

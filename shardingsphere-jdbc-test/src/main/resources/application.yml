@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: shardingsphere-jdbc-test
+    port: 8667
+  datasource:
+    druid:
+      db-type: mysql
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/sharding1?serverTimezone=UTC
+      username: root
+      password: 1
