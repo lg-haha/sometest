@@ -14,7 +14,7 @@
         <module>shardingsphere-jdbc-test</module>
     </modules>
     <properties>
-        <java.version>17</java.version>
+        <java.version>25</java.version>
         <spring-boot.version>3.5.11</spring-boot.version>
     </properties>
     <dependencyManagement>

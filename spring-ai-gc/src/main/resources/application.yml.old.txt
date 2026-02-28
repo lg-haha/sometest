@@ -1,0 +1,17 @@
+server:
+  port: 8666
+spring:
+  application:
+    name: spring-ai-test
+  ai:
+    deepseek:
+      api-key: ${DEEP_SEEK_KEY}
+      chat:
+        options:
+          model: deepseek-chat
+          max-tokens: 1024 # 生成文本的最大长度
+#          stop:
+#            - "\n" # 生成文本的结束标志 只想一行
+#            - "。" # 生成文本的结束标志 只想一句话
+#            - "政治" #敏感词
+#            - "最后最总结一下"
