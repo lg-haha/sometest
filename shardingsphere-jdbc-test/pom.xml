@@ -8,7 +8,7 @@
     </parent>
     <artifactId>shardingsphere-jdbc-test</artifactId>
     <packaging>jar</packaging>
-    <name>shardingsphere-demo</name>
+    <name>shardingsphere-jdbc-test</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
