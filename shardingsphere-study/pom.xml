@@ -6,17 +6,15 @@
         <artifactId>some-test-and-study</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
-    <artifactId>spring-ai-gc</artifactId>
+    <artifactId>shardingsphere-study</artifactId>
+    <name>shardingsphere-study</name>
     <packaging>pom</packaging>
-
-    <name>spring-ai-gc</name>
-    <url>http://maven.apache.org</url>
-    <modules>
-        <module>spring-ai-demo1</module>
-    </modules>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
+    <modules>
+        <module>shardingsphere-jdbc-demo1</module>
+    </modules>
 </project>

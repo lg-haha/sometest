@@ -65,7 +65,7 @@ public void testChat(@Autowired
 实战用法一般建议选 0.5~0.8 作为日常生产起点，需要根据业务不断测试调整。
 ~~~
 
-![img.png](src/main/java/com/lg/img.png)
+![img.png](img.png)
 
 #### maxTokens（最大token数）
 

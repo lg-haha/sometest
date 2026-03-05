@@ -1,14 +1,9 @@
 package com.lg;
 
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
-import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatOptions;
 import com.alibaba.cloud.ai.dashscope.image.DashScopeImageModel;
 import com.alibaba.cloud.ai.dashscope.image.DashScopeImageOptions;
-import com.alibaba.cloud.ai.dashscope.spec.DashScopeModel;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.image.ImageOptions;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
 import org.springframework.beans.factory.annotation.Autowired;

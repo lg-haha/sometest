@@ -3,22 +3,31 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lg</groupId>
-        <artifactId>some-test-and-study</artifactId>
+        <artifactId>shardingsphere-study</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>shardingsphere-jdbc-test</artifactId>
+    <artifactId>shardingsphere-jdbc-demo1</artifactId>
     <packaging>jar</packaging>
-    <name>shardingsphere-jdbc-test</name>
+    <name>shardingsphere-jdbc-demo1</name>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-boot.version>3.5.11</spring-boot.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -68,6 +77,10 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
     </dependencies>
 </project>
