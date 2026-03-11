@@ -16,5 +16,6 @@
 
     <modules>
         <module>shardingsphere-jdbc-demo1</module>
+        <module>shardingsphere-jdbc-demo2</module>
     </modules>
 </project>
