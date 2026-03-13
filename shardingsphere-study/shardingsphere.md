@@ -308,37 +308,72 @@ rules:
 **有一个问题？这里进行了分库分表操作，那么如果我一个系统中只是少量表由于数据量太大导致需要分库分表，
 但是其他数据是正常数据不需要这样的操作我该怎么办呢？**
 
-在 ShardingSphere 中，这种情况会默认将数据写入第一个数据源中，所以把其他表放在第一个数据中即可
-但是这种方式是不灵活的，更灵活的方式是通过配置默认数据源来解决
+在 ShardingSphere 中，ai给出的说法是 ：<br>
+这种情况会默认将数据写入第一个数据源中，所以把其他表放在第一个数据中即可<br>
+但是这种方案经过验证其实是不行的，在当前版本 5.5.2中会报错<br>
+解决方案是<br>
+
+* 指定表的数据节点
 
 ~~~yaml
-# ... existing code ...
-rules:
-  - !SHARDING
-    # 新增：指定默认数据源，所有未配置分片规则的表都存储在这里
-    defaultDataSourceName: ds_0
 
-    # 分片表配置
-    tables:
-      # course 课程表的完整分片配置
-      course:
+# ... existing code ...
+
+# 分片表配置
+tables:
+  # course 课程表的完整分片配置
+  course:
+    # 真实数据节点映射表达式
+    # ds_${0..1} 表示 ds_0 和 ds_1 两个数据源
+    # course_${1..2} 表示每个库中的 course_1 和 course_2 两张表
+    # 组合后共 4 个真实表：ds_0.course_1, ds_0.course_2, ds_1.course_1, ds_1.course_2
+    actualDataNodes: ds_${0..1}.course_${1..2}
+
+    # 分库策略：根据 cid 决定去 ds_0 还是 ds_1
+    databaseStrategy:
+      # 标准分片策略：适用于单分片键场景
+      standard:
+        # 分片键：用于计算路由到哪个数据库的字段
+        shardingColumn: cid
+        # 分片算法名称：引用下方 shardingAlgorithms 中定义的 database_inline 算法
+        shardingAlgorithmName: database_inline
+
+    # 分表策略：根据 cid 决定去 course_1 还是 course_2
+    tableStrategy:
+      # 标准分片策略：适用于单分片键场景
+      standard:
+        # 分片键：用于计算路由到哪个表的字段
+        shardingColumn: cid
+        # 分片算法名称：引用下方 shardingAlgorithms 中定义的 course_inline 算法
+        shardingAlgorithmName: course_inline
+
+    # 分布式主键生成策略配置
+    keyGenerateStrategy:
+      # 主键字段名
+      column: cid
+      # 主键生成器名称：引用下方 keyGenerators 中定义的 snowflake 雪花算法
+      keyGeneratorName: snowflake
+
+  # user 用户表配置：只在 ds_0 中，不分库分表
+  user:
+    # 真实数据节点：只指向 ds_0
+    actualDataNodes: ds_0.user
+
 # ... existing code ...
 ~~~
 
-其次，如果想将部分表只写入其他数据源中，可以通过下面配置实现
+**这种使方式缺陷特别严重，比如我有500张表其实只在ds_0数据源中，那么我也要配置500次吗？但是在5.5.2中，就是这个鬼样子**
+
+## 广播表
+
+广播表，即所有表在所有数据库中都有一份完全相同的副本，比如字典表、配置表等。<br>
+广播表在所有数据源中都进行读写操作，因此广播表的所有操作都是全局的，与分库分表无关。
 
 ~~~yaml
 rules:
-  - !SHARDING
-    defaultDataSourceName: ds_0
-
+  - !BROADCAST
     tables:
-      # course 表分库分表
-      course:
-        actualDataNodes: ds_${0..1}.course_${1..2}
-        # ... 其他配置
-
-      # 如果某些表需要固定在 ds_1，可以这样配置
-      some_other_table:
-        actualDataNodes: ds_1.some_other_table
+      - user
 ~~~
+
+配置广播表后，插入数据时，每个数据源中的表中都会插入全部的数据；查询时，经过测试 会随机查询某个数据源中的数据

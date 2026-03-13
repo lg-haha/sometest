@@ -1,4 +1,3 @@
-
 # =============================================================================
 # Apache ShardingSphere 分库分表配置文件
 # =============================================================================
@@ -46,8 +45,6 @@ dataSources:
 rules:
   # 启用分片规则配置
   - !SHARDING
-    # 指定默认数据源，所有未配置分片规则的表都存储在这里
-    defaultDataSourceName: ds_0
     # 分片表配置
     tables:
       # course 课程表的完整分片配置
@@ -82,7 +79,14 @@ rules:
           column: cid
           # 主键生成器名称：引用下方 keyGenerators 中定义的 snowflake 雪花算法
           keyGeneratorName: snowflake
-
+#      # user 用户表配置：只在 ds_0 中，不分库分表
+#      user:
+#        # 真实数据节点：只指向 ds_0
+#        actualDataNodes: ds_0.user
+    defaultDatabaseStrategy:
+      none:
+    defaultTableStrategy:
+      none:
     # 分片算法定义
     shardingAlgorithms:
       # 数据库分片算法：决定数据路由到哪个数据库
@@ -102,7 +106,7 @@ rules:
         props:
           # 分片算法表达式：cid 先整除 2 再对 2 取模，最后加 1，结果映射到 course_1 或 course_2
           # 示例：cid=0~1 → course_1, cid=2~3 → course_2, cid=4~5 → course_1, 以此类推
-          algorithm-expression:  course_${(cid.intdiv(2) % 2) + 1}
+          algorithm-expression: course_${(cid.intdiv(2) % 2) + 1}
 
     # 分布式主键生成器定义
     keyGenerators:
@@ -110,3 +114,9 @@ rules:
       snowflake:
         # 使用 Snowflake 雪花算法
         type: SNOWFLAKE
+
+  - !BROADCAST
+    tables:
+      - user
+props:
+  sql-show: true

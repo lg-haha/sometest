@@ -3,7 +3,9 @@ package com.lg;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lg.demo1.entry.Course;
+import com.lg.demo1.entry.User;
 import com.lg.demo1.mapper.CourseMapper;
+import com.lg.demo1.mapper.UserMapper;
 import jakarta.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +27,9 @@ public class JDBCTest {
     @Resource
     private CourseMapper courseMapper;
 
+    @Resource
+    private UserMapper userMapper;
+
     @Test
     public void addCourse() {
         for (int i = 0; i < 100; i++) {
@@ -35,6 +40,25 @@ public class JDBCTest {
             courseMapper.insert(c);
             System.out.printf(c.toString());
         }
+    }
+
+    @Test
+    public void addUser() {
+        for (int i = 0; i < 10; i++) {
+            User u = new User();
+            u.setAddr("上海");
+            u.setAge(18);
+            u.setPhone("18579845631");
+            userMapper.insert(u);
+        }
+    }
+
+    @Test
+    public void queryUser() {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", "2032483989562302466");
+        List<User> users = userMapper.selectList(wrapper);
+        users.forEach(user -> System.out.println(user));
     }
 
     @Test
