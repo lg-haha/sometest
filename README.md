@@ -4,6 +4,12 @@
 
 ## 算法
 
+[DSA.md](algorithmic-study/DSA.md)
+
 ## ShardingSphere
 
+[shardingsphere.md](shardingsphere-study/shardingsphere.md)
+
 ## ai
+
+[springAi.md](spring-ai-gc/springAi.md)
