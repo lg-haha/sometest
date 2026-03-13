@@ -4,12 +4,12 @@
 
 ## 算法
 
-[DSA.md](algorithmic-study/DSA.md)
+[算法笔记](algorithmic-study/DSA.md)
 
 ## ShardingSphere
 
-[shardingsphere.md](shardingsphere-study/shardingsphere.md)
+[shardingsphere笔记](shardingsphere-study/shardingsphere.md)
 
 ## ai
 
-[springAi.md](spring-ai-gc/springAi.md)
+[springAi笔记](spring-ai-gc/springAi.md)
