@@ -187,5 +187,158 @@ public class ShardingConfig {
 </resources>
 ~~~
 
+## 数据分片（分库分表）
+
 #### 配置文件内容
 
+~~~yaml
+# =============================================================================
+# Apache ShardingSphere 分库分表配置文件
+# =============================================================================
+# 该配置文件定义了数据源、分片策略、分布式主键等核心配置
+# 用于实现数据库的水平拆分（分库分表）功能
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 运行模式配置
+# -----------------------------------------------------------------------------
+# 定义 ShardingSphere 的运行模式和数据存储方式
+mode:
+  # 单机模式：适用于单体应用，元数据存储在本地的 JDBC Repository 中
+  type: Standalone
+  # 元数据存储仓库类型：使用 JDBC 方式存储分片规则等元数据信息
+  repository:
+    type: JDBC
+
+# -----------------------------------------------------------------------------
+# 数据源配置
+# -----------------------------------------------------------------------------
+# 定义实际参与分片的物理数据源
+# ds_0 对应 sharding1 数据库，ds_1 对应 sharding2 数据库
+dataSources:
+  # 第一个数据源：sharding1 数据库
+  ds_0:
+    dataSourceClassName: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sharding1?autoReconnect=true&autoReconnectForPools=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 1
+
+  # 第二个数据源：sharding2 数据库
+  ds_1:
+    dataSourceClassName: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/sharding2?autoReconnect=true&autoReconnectForPools=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 1
+
+# -----------------------------------------------------------------------------
+# 分片规则配置
+# -----------------------------------------------------------------------------
+# 定义数据分片的核心规则，包括分表策略、分库策略、分布式主键等
+rules:
+  # 启用分片规则配置
+  - !SHARDING
+    # 指定默认数据源，所有未配置分片规则的表都存储在这里
+    defaultDataSourceName: ds_0
+    # 分片表配置
+    tables:
+      # course 课程表的完整分片配置
+      course:
+        # 真实数据节点映射表达式
+        # ds_${0..1} 表示 ds_0 和 ds_1 两个数据源
+        # course_${1..2} 表示每个库中的 course_1 和 course_2 两张表
+        # 组合后共 4 个真实表：ds_0.course_1, ds_0.course_2, ds_1.course_1, ds_1.course_2
+        actualDataNodes: ds_${0..1}.course_${1..2}
+
+        # 分库策略：根据 cid 决定去 ds_0 还是 ds_1
+        databaseStrategy:
+          # 标准分片策略：适用于单分片键场景
+          standard:
+            # 分片键：用于计算路由到哪个数据库的字段
+            shardingColumn: cid
+            # 分片算法名称：引用下方 shardingAlgorithms 中定义的 database_inline 算法
+            shardingAlgorithmName: database_inline
+
+        # 分表策略：根据 cid 决定去 course_1 还是 course_2
+        tableStrategy:
+          # 标准分片策略：适用于单分片键场景
+          standard:
+            # 分片键：用于计算路由到哪个表的字段
+            shardingColumn: cid
+            # 分片算法名称：引用下方 shardingAlgorithms 中定义的 course_inline 算法
+            shardingAlgorithmName: course_inline
+
+        # 分布式主键生成策略配置
+        keyGenerateStrategy:
+          # 主键字段名
+          column: cid
+          # 主键生成器名称：引用下方 keyGenerators 中定义的 snowflake 雪花算法
+          keyGeneratorName: snowflake
+
+    # 分片算法定义
+    shardingAlgorithms:
+      # 数据库分片算法：决定数据路由到哪个数据库
+      database_inline:
+        # 行表达式内联算法：使用 Groovy 表达式进行分片计算
+        type: INLINE
+        # 算法属性配置
+        props:
+          # 分片算法表达式：cid 对 2 取模，结果为 0 路由到 ds_0，结果为 1 路由到 ds_1
+          algorithm-expression: ds_${cid % 2}
+
+      # 课程表分表算法：决定数据路由到哪个表
+      course_inline:
+        # 行表达式内联算法：使用 Groovy 表达式进行分片计算
+        type: INLINE
+        # 算法属性配置
+        props:
+          # 分片算法表达式：cid 先整除 2 再对 2 取模，最后加 1，结果映射到 course_1 或 course_2
+          # 示例：cid=0~1 → course_1, cid=2~3 → course_2, cid=4~5 → course_1, 以此类推
+          algorithm-expression: course_${(cid.intdiv(2) % 2) + 1}
+
+    # 分布式主键生成器定义
+    keyGenerators:
+      # 雪花算法生成器：生成分布式唯一 ID
+      snowflake:
+        # 使用 Snowflake 雪花算法
+        type: SNOWFLAKE
+~~~
+
+**有一个问题？这里进行了分库分表操作，那么如果我一个系统中只是少量表由于数据量太大导致需要分库分表，
+但是其他数据是正常数据不需要这样的操作我该怎么办呢？**
+
+在 ShardingSphere 中，这种情况会默认将数据写入第一个数据源中，所以把其他表放在第一个数据中即可
+但是这种方式是不灵活的，更灵活的方式是通过配置默认数据源来解决
+
+~~~yaml
+# ... existing code ...
+rules:
+  - !SHARDING
+    # 新增：指定默认数据源，所有未配置分片规则的表都存储在这里
+    defaultDataSourceName: ds_0
+
+    # 分片表配置
+    tables:
+      # course 课程表的完整分片配置
+      course:
+# ... existing code ...
+~~~
+
+其次，如果想将部分表只写入其他数据源中，可以通过下面配置实现
+
+~~~yaml
+rules:
+  - !SHARDING
+    defaultDataSourceName: ds_0
+
+    tables:
+      # course 表分库分表
+      course:
+        actualDataNodes: ds_${0..1}.course_${1..2}
+        # ... 其他配置
+
+      # 如果某些表需要固定在 ds_1，可以这样配置
+      some_other_table:
+        actualDataNodes: ds_1.some_other_table
+~~~
