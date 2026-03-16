@@ -8,7 +8,7 @@
 
 ## SpringCloud Alibaba
 
-[SpringCloud笔记.md](springcloud-alibaba/SpringCloud.md)
+[SpringCloud笔记.md](springcloud-alibaba-study/SpringCloud.md)
 
 ## ShardingSphere
 
@@ -17,4 +17,3 @@
 ## ai
 
 [springAi笔记](spring-ai-gc/springAi.md)
-

@@ -7,11 +7,15 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>springcloud-alibaba</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>springcloud-alibaba-study</artifactId>
+    <packaging>pom</packaging>
 
-    <name>springcloud-alibaba</name>
+    <name>springcloud-alibaba-study</name>
     <url>http://maven.apache.org</url>
+    <modules>
+        <module>springcloud-order</module>
+        <module>springcloud-common</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -12,7 +12,7 @@
         <module>algorithmic-study</module>
         <module>spring-ai-gc</module>
         <module>shardingsphere-study</module>
-        <module>springcloud-alibaba</module>
+        <module>springcloud-alibaba-study</module>
     </modules>
     <properties>
         <java.version>17</java.version>
