@@ -59,7 +59,7 @@ rules:
         databaseStrategy:
           # 标准分片策略：适用于单分片键场景
           standard:
-            # 分片键：用于计算路由到哪个数据库的字段
+            # 分片键：使用cid作为分片键
             shardingColumn: cid
             # 分片算法名称：引用下方 shardingAlgorithms 中定义的 database_inline 算法
             shardingAlgorithmName: database_inline
@@ -68,7 +68,7 @@ rules:
         tableStrategy:
           # 标准分片策略：适用于单分片键场景
           standard:
-            # 分片键：用于计算路由到哪个表的字段
+            # 分片键：使用cid作为分片键
             shardingColumn: cid
             # 分片算法名称：引用下方 shardingAlgorithms 中定义的 course_inline 算法
             shardingAlgorithmName: course_inline
@@ -95,8 +95,8 @@ rules:
         type: INLINE
         # 算法属性配置
         props:
-          # 分片算法表达式：cid 对 2 取模，结果为 0 路由到 ds_0，结果为 1 路由到 ds_1
-          algorithm-expression: ds_${cid % 2}
+          # 分片算法表达式：使用雪花ID的高位（时间戳部分）确保均匀分布
+          algorithm-expression: "ds_${(cid >> 22) % 2}"
 
       # 课程表分表算法：决定数据路由到哪个表
       course_inline:
@@ -104,9 +104,8 @@ rules:
         type: INLINE
         # 算法属性配置
         props:
-          # 分片算法表达式：cid 先整除 2 再对 2 取模，最后加 1，结果映射到 course_1 或 course_2
-          # 示例：cid=0~1 → course_1, cid=2~3 → course_2, cid=4~5 → course_1, 以此类推
-          algorithm-expression: course_${(cid.intdiv(2) % 2) + 1}
+          # 分片算法表达式：使用雪花ID的高位（时间戳部分）确保均匀分布
+          algorithm-expression: "course_${((cid >> 22) % 4 < 2 ? 1 : 2)}"
 
     # 分布式主键生成器定义
     keyGenerators:
@@ -114,6 +113,11 @@ rules:
       snowflake:
         # 使用 Snowflake 雪花算法
         type: SNOWFLAKE
+        # 添加振动偏移参数，确保分片均匀分布
+        props:
+          # 最大振动偏移量，范围[0, 4096)，用于避免雪花算法低位相同导致分片不均匀
+          # 设置为3（2^2 - 1），因为总共有4个分片节点（2^2）
+          max-vibration-offset: 3
 
   - !BROADCAST
     tables:

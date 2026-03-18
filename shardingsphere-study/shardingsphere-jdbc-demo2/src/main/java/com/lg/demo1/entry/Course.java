@@ -12,6 +12,7 @@ import lombok.Data;
  */
 @Data
 public class Course {
+    @TableId(type = IdType.ASSIGN_ID)
     private Long cid;
     private String cname;
     private Long userId;
