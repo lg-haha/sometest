@@ -20,7 +20,7 @@ spring:
       chat:
         options:
           model: deepseek-chat
-          max-tokens: 1024 # 生成文本的最大长度
+          max-tokens: 2048 # 生成文本的最大长度
     dashscope:
       api-key: ${AI_DASHSCOPE_API_KEY}
     ollama:

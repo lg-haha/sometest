@@ -1,7 +1,7 @@
 package com.lg;
 
 import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
-import com.lg.demo.service.NameCountsTools;
+import com.lg.demo.tools.NameCountsTools;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.chat.client.ChatClient;

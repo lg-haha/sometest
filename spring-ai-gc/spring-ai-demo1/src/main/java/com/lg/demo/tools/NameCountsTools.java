@@ -1,4 +1,4 @@
-package com.lg.demo.service;
+package com.lg.demo.tools;
 
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;

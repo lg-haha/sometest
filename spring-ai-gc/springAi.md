@@ -619,3 +619,4 @@ tool calling也可以直接叫tool（也称为function-call）, 主要用于提�
 
 **需要使用tools必须要先保证大模型支持。   比如ollama列出了支持tool的模型**
 
+###
